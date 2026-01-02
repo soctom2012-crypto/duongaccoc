@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Môi Trường</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 16px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: linear-gradient(90deg, #2E8B57 0%, #3CB371 100%);
+            border-radius: 16px;
+            color: white;
+            box-shadow: 0 6px 12px rgba(46, 139, 87, 0.2);
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        h1 i {
+            font-size: 2rem;
+        }
+        
+        .score-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .score-box {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2E8B57;
+        }
+        
+        .divider {
+            width: 1px;
+            height: 40px;
+            background: #eee;
+        }
+        
+        .quiz-container {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        
+        .quiz-header {
+            background: #3CB371;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        #quiz-content {
+            padding: 16px;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+        
+        .question-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 5px solid #3CB371;
+            transition: transform 0.2s;
+        }
+        
+        .question-card:active {
+            transform: scale(0.99);
+        }
+        
+        .question-card p {
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #2c3e50;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .options label {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .options label:active {
+            background: #f0f9f0;
+            border-color: #3CB371;
+        }
+        
+        .options input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        #check-btn {
+            background: linear-gradient(90deg, #3CB371 0%, #2E8B57 100%);
+            color: white;
+        }
+        
+        #check-btn:active {
+            background: linear-gradient(90deg, #2E8B57 0%, #3CB371 100%);
+            transform: translateY(2px);
+        }
+        
+        #reset-btn {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+        
+        #reset-btn:active {
+            background: #e9ecef;
+            transform: translateY(2px);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 24px;
+            padding: 16px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #3CB371;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        @media (max-width: 380px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .score-value {
+                font-size: 1.5rem;
+            }
+            
+            button {
+                padding: 16px;
+                font-size: 1rem;
+            }
+        }
+        
+        /* Hiệu ứng loading cho câu hỏi mới */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question-card {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-leaf"></i> Quiz Môi Trường Xanh</h1>
+            <p>Kiểm tra kiến thức bảo vệ môi trường</p>
+        </header>
+        
+        <div class="score-panel">
+            <div class="score-box">
+                <div class="score-label">ĐIỂM HIỆN TẠI</div>
+                <div class="score-value" id="totalScore">0</div>
+            </div>
+            <div class="divider"></div>
+            <div class="score-box">
+                <div class="score-label">SỐ CÂU</div>
+                <div class="score-value">10</div>
+            </div>
+        </div>
+        
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <i class="fas fa-question-circle"></i> Chọn câu trả lời đúng
+            </div>
+            <div id="quiz-content">
+                <!-- Câu hỏi sẽ được thêm bằng JavaScript -->
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="check-btn">
+                <i class="fas fa-check-circle"></i> Nộp bài
+            </button>
+            <button id="reset-btn">
+                <i class="fas fa-redo-alt"></i> Reset điểm
+            </button>
+        </div>
+        
+        <footer>
+            <p>Mỗi câu đúng: 10 điểm | Tổng điểm được lưu tự động</p>
+            <p>© 2023 Quiz Môi Trường Xanh</p>
+        </footer>
+    </div>
+
+    <script>
+        // Cơ sở dữ liệu câu hỏi
+        const db = [
+            { q: "Giấy vụn thuộc nhóm rác nào?", a: ["Tái chế", "Vô cơ", "Hữu cơ", "Rác độc hại"], correct: 0 },
+            { q: "Pin cũ hỏng nên xử lý thế nào?", a: ["Vứt vào thùng rác hữu cơ", "Đốt đi", "Gom lại đưa đến điểm thu gom riêng", "Vứt xuống cống"], correct: 2 },
+            { q: "Ngày Môi trường Thế giới là ngày nào?", a: ["5/5", "5/6", "1/6", "2/9"], correct: 1 },
+            { q: "Loại rác nào sau đây có thể phân hủy sinh học?", a: ["Túi nilon", "Vỏ hộp sữa", "Rau củ quả thừa", "Chai nhựa"], correct: 2 },
+            { q: "Hành động nào giúp tiết kiệm nước?", a: ["Tắm bồn", "Xả nước khi đánh răng", "Dùng vòi sen ngắn", "Giặt quần áo mỗi ngày"], correct: 2 },
+            { q: "Năng lượng nào sau đây là năng lượng tái tạo?", a: ["Than đá", "Dầu mỏ", "Khí đốt", "Năng lượng mặt trời"], correct: 3 },
+            { q: "Khí nào gây hiệu ứng nhà kính?", a: ["Oxy", "Nito", "CO2", "Heli"], correct: 2 },
+            { q: "Phương tiện nào thân thiện với môi trường nhất?", a: ["Xe máy", "Xe ô tô con", "Xe đạp", "Xe buýt"], correct: 2 },
+            { q: "Biện pháp nào giúp giảm rác thải nhựa?", a: ["Dùng túi vải khi mua sắm", "Dùng chai nhựa một lần", "Mua đồ đóng gói sẵn", "Dùng ống hút nhựa"], correct: 0 },
+            { q: "Cây xanh có tác dụng gì với môi trường?", a: ["Hấp thụ CO2, thải O2", "Hấp thụ O2, thải CO2", "Tăng nhiệt độ", "Hút bụi mịn"], correct: 0 },
+            { q: "Nên làm gì với quần áo cũ?", a: ["Vứt vào thùng rác", "Đốt bỏ", "Tặng hoặc tái sử dụng", "Vứt xuống sông"], correct: 2 },
+            { q: "Thùng rác màu xanh dương thường đựng loại rác gì?", a: ["Rác hữu cơ", "Rác tái chế", "Rác vô cơ", "Rác độc hại"], correct: 1 }
+        ];
+
+        // Lấy tổng điểm từ localStorage
+        let totalScore = localStorage.getItem('totalScore') ? parseInt(localStorage.getItem('totalScore')) : 0;
+        document.getElementById('totalScore').innerText = totalScore;
+
+        // Khởi tạo quiz
+        function initQuiz() {
+            // Xáo trộn câu hỏi và lấy 10 câu
+            let shuffled = [...db].sort(() => 0.5 - Math.random()).slice(0, 10);
+            let html = "";
+            
+            shuffled.forEach((item, index) => {
+                html += `<div class="question-card" data-correct="${item.correct}">
+                    <p><strong>Câu ${index + 1}:</strong> ${item.q}</p>
+                    <div class="options">
+                        ${item.a.map((opt, i) => 
+                            `<label>
+                                <input type="radio" name="q${index}" value="${i}">
+                                <span>${String.fromCharCode(65+i)}. ${opt}</span>
+                            </label>`
+                        ).join('')}
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('quiz-content').innerHTML = html;
+            
+            // Cập nhật thanh tiến trình
+            document.getElementById('progress').style.width = '0%';
+            
+            // Thêm sự kiện cho các lựa chọn
+            document.querySelectorAll('.options label').forEach(label => {
+                label.addEventListener('click', function() {
+                    // Bỏ chọn tất cả các option trong cùng một câu hỏi
+                    const questionCard = this.closest('.question-card');
+                    questionCard.querySelectorAll('label').forEach(l => {
+                        l.style.background = 'white';
+                        l.style.borderColor = '#e0e0e0';
+                    });
+                    
+                    // Đánh dấu option được chọn
+                    this.style.background = '#f0f9f0';
+                    this.style.borderColor = '#3CB371';
+                    
+                    // Cập nhật thanh tiến trình
+                    const totalQuestions = shuffled.length;
+                    const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+                    const progressPercent = (answeredQuestions / totalQuestions) * 100;
+                    document.getElementById('progress').style.width = `${progressPercent}%`;
+                });
+            });
+        }
+
+        // Kiểm tra câu trả lời
+        function checkAnswers() {
+            let sessionScore = 0;
+            let allAnswered = true;
+            const cards = document.querySelectorAll('.question-card');
+            
+            cards.forEach((card, index) => {
+                const selected = card.querySelector(`input[name="q${index}"]:checked`);
+                
+                if (!selected) {
+                    allAnswered = false;
+                    card.style.borderLeftColor = '#ff9800'; // Màu cam cho câu chưa trả lời
+                } else {
+                    const selectedValue = parseInt(selected.value);
+                    const correctValue = parseInt(card.dataset.correct);
+                    
+                    if (selectedValue === correctValue) {
+                        sessionScore += 10;
+                        card.style.borderLeftColor = '#4CAF50'; // Màu xanh cho câu đúng
+                    } else {
+                        card.style.borderLeftColor = '#f44336'; // Màu đỏ cho câu sai
+                    }
+                }
+            });
+            
+            if (!allAnswered) {
+                alert("Vui lòng trả lời tất cả các câu hỏi trước khi nộp bài!");
+                return;
+            }
+            
+            // Cập nhật tổng điểm
+            totalScore += sessionScore;
+            localStorage.setItem('totalScore', totalScore);
+            document.getElementById('totalScore').innerText = totalScore;
+            
+            // Hiển thị kết quả
+            setTimeout(() => {
+                alert(`🎉 Chúc mừng! Bạn đạt ${sessionScore}/100 điểm lượt này!\nTổng điểm: ${totalScore}`);
+                initQuiz(); // Tạo bài quiz mới
+            }, 300);
+        }
+
+        // Reset tất cả điểm
+        function resetAll() {
+            if(confirm("Bạn có chắc muốn xóa toàn bộ điểm số không?")) {
+                localStorage.removeItem('totalScore');
+                totalScore = 0;
+                document.getElementById('totalScore').innerText = totalScore;
+                alert("Điểm số đã được đặt lại về 0!");
+                initQuiz();
+            }
+        }
+
+        // Gán sự kiện cho các nút
+        document.getElementById('check-btn').addEventListener('click', checkAnswers);
+        document.getElementById('reset-btn').addEventListener('click', resetAll);
+
+        // Khởi tạo quiz khi trang tải xong
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
